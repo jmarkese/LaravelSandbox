@@ -8,7 +8,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
-use Markese\Datatables\Datatables;
+use App\Libs\Datatables;
+
 
 class Controller extends BaseController
 {
