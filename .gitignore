@@ -1,2 +1,6 @@
 .DS_store
 .idea/*
+Laravel/packages/Markese/
+Laravel/packages/Markese/*
+Laravel/packages/Markese/Datatables/
+Laravel/packages/Markese/Datatables/*
