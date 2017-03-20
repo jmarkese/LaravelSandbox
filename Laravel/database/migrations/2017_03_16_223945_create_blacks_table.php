@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Whites extends Migration
+class CreateBlacksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class Whites extends Migration
      */
     public function up()
     {
-        Schema::create('whites', function (Blueprint $table) {
+        Schema::create('blacks', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('number')->unsigned()->nullable();
             $table->string('name')->nullable();
-            $table->integer('black_id')->unsigned()->nullable();
-            $table->integer('grey_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class Whites extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('whites');
+        Schema::dropIfExists('blacks');
     }
 }

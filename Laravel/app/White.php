@@ -10,8 +10,8 @@ class White extends Model
         return $this->hasMany('App\Red');
     }
 
-    public function yellows(){
-        return $this->hasMany('App\Yellows');
+    public function yellow(){
+        return $this->hasOne('App\Yellow');
     }
 
     public function greens(){
@@ -31,5 +31,16 @@ class White extends Model
         return $this->morphToMany('App\magenta', 'magentables');
     }
 
+    public function black(){
+        return $this->belongsTo('App\Black');
+    }
+
+    public function manyBlacks(){
+        return $this->belongsToMany('App\Black');
+    }
+
+    public function grey(){
+        return $this->belongsTo('App\Grey');
+    }
 
 }

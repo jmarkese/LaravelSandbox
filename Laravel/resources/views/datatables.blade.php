@@ -86,7 +86,12 @@
                 { "data": "name", "title": "Name", "name": "name" },
                 { "data": "number", "title": "Number", "name": "number" },
                 { "data": "magentas[].name", "title": "Magenta", "name": "magentas.*.name" },
+                { "data": "yellow.name", "title": "Yellow", "name": "yellow.name" },
+                { "data": "black.name", "title": "Black", "name": "black.name" },
+                { "data": "many_blacks[].name", "title": "Black Many", "name": "manyBlacks.*.name" },
+                { "data": "grey.name", "title": "Grey", "name": "grey.name" },
                 { "data": "blues[].cyans[].name", "title": "Cyan", "name": "blues.*.cyans.*.name" },
+                { "data": "reds[].name", "title": "Reds", "name": "reds.*.name" },
                 //{ "data": "created_at", "title": "Created", "name": "created_at"  },
             ]
         } );
