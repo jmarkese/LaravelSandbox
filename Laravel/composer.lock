@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "80c414229d7a74e31ef801cabb9e2777",
+    "content-hash": "8bc7ed0f9def99793b8f6b7dbbe52e1f",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -784,6 +784,54 @@
                 "storage"
             ],
             "time": "2017-02-09T11:33:58+00:00"
+        },
+        {
+            "name": "markese/datatables",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jmarkese/Datatables.git",
+                "reference": "11f10b261985edee83722e3984f22ba0aa6f72a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jmarkese/Datatables/zipball/11f10b261985edee83722e3984f22ba0aa6f72a7",
+                "reference": "11f10b261985edee83722e3984f22ba0aa6f72a7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.1",
+                "php": "~7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0||~5.0",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Markese\\Datatables\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "John Markese",
+                    "email": "john.markese@gmail.com",
+                    "homepage": "http://www.johnmarkese.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Create HTTP responses compatible with Datatables for JQuery from Eloquent Models, Query Builders, and Laravel Collections.",
+            "homepage": "https://github.com/jmarkese/Datatables",
+            "keywords": [
+                "Markese",
+                "datatables"
+            ],
+            "time": "2017-03-12T03:00:22+00:00"
         },
         {
             "name": "maximebf/debugbar",
