@@ -17,7 +17,6 @@ class CreateBluesTable extends Migration
             $table->increments('id');
             $table->integer('number')->unsigned()->nullable();
             $table->string('name')->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
             $table->integer('white_id')->unsigned()->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

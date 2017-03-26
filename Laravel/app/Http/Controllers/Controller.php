@@ -19,4 +19,11 @@ class Controller extends BaseController
         $whites = \App\White::query();
         return Datatables::response($whites, $request);
     }
+
+    public function usergroups(Request $request)
+    {
+        $users = \App\User::with('groups');
+        return Datatables::response($users, $request);
+    }
+
 }

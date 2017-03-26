@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRedsTable extends Migration
+class CreateGroupsResourcesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,17 @@ class CreateRedsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reds', function (Blueprint $table) {
+        Schema::create('group_resource', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('number')->unsigned()->nullable();
-            $table->string('name')->nullable();
-            $table->integer('white_id')->unsigned()->nullable();
+
+            $table->integer('group_id')
+                ->unsigned()
+                ->index();
+
+            $table->integer('resource_id')
+                ->unsigned()
+                ->index();
+
             $table->timestamps();
         });
     }
@@ -29,6 +35,6 @@ class CreateRedsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reds');
+        Schema::dropIfExists('group_resource');
     }
 }

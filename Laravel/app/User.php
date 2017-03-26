@@ -27,12 +27,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function blue(){
-        return $this->belongsTo('Blue');
+    /**
+     * A User can have many Groups, and Groups can have many Users.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function groups()
+    {
+        return $this->belongsToMany('App\GroupResources\Group');
     }
-
-    public function red(){
-        return $this->belongsTo('App\Red');
-    }
-
 }

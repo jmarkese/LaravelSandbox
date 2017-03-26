@@ -13,8 +13,4 @@ class Blue extends Model
     public function cyans(){
         return $this->belongsToMany('App\Cyan');
     }
-
-    public function users(){
-        return $this->hasMany('App\User');
-    }
 }
