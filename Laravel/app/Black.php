@@ -18,8 +18,4 @@ class Black extends Model
     public function manyWhites(){
         return $this->belongsToMany('App\White');
     }
-
-    public function resources(){
-        return $this->morphMany('App\GroupResources\Resource', 'resourceable');
-    }
 }

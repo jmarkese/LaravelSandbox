@@ -24,6 +24,22 @@ class CreateGroupsTable extends Migration
             $table->string('name')
                 ->nullable();
 
+            $table->integer('numer_l')
+                ->unsigned();
+
+            $table->integer('denom_l')
+                ->unsigned();
+
+            $table->integer('numer_r')
+                ->unsigned();
+
+            $table->integer('denom_r')
+                ->unsigned();
+
+            $table->integer('interval')
+                ->unsigned();
+
+
             $table->integer('groupables_id')
                 ->unsigned()
                 ->nullable()

@@ -28,12 +28,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * A User can have many Groups, and Groups can have many Users.
-     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function groups()
     {
-        return $this->belongsToMany('App\GroupResources\Group');
+        return $this->morphToMany('App\GroupResources\Group', 'groupable');
     }
 }

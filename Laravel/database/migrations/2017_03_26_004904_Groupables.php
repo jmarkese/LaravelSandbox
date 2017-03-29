@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGroupsResourcesTable extends Migration
+class Groupables extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,19 @@ class CreateGroupsResourcesTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_resource', function (Blueprint $table) {
+        Schema::create('groupables', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('group_id')
                 ->unsigned()
                 ->index();
 
-            $table->integer('resource_id')
+            $table->integer('groupable_id')
                 ->unsigned()
                 ->index();
 
-            $table->timestamps();
+            $table->string('groupable_type')
+                ->index();
         });
     }
 
@@ -35,6 +36,6 @@ class CreateGroupsResourcesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_resource');
+        Schema::drop('groupables');
     }
 }

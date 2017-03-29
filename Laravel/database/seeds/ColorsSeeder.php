@@ -1,7 +1,6 @@
 <?php
 
 use App\GroupResources\Group;
-use App\GroupResources\Resource;
 use Illuminate\Database\Seeder;
 
 class ColorsSeeder extends Seeder
@@ -22,7 +21,7 @@ class ColorsSeeder extends Seeder
         //numberBetween($min = 1, $max = $limit)
 
         for ($i = 0; $i < $limit; $i++) {
-            DB::table('whites')->insert([
+            $white = \App\White::create([
                 'created_at' => $faker->dateTime($max = 'now', $timezone = date_default_timezone_get()),
                 'updated_at' => $faker->dateTime($max = 'now', $timezone = date_default_timezone_get()),
                 'name' => $faker->domainWord,
@@ -30,6 +29,8 @@ class ColorsSeeder extends Seeder
                 'black_id' => $i+1,
                 'grey_id' => ((int) ($i / $belongs)) + 1,
             ]);
+            $groupId = (1 === $i % 2) ? 3 : 4;
+            $white->groups()->attach($groupId);
         }
 
         for ($i = 0; $i < $limit; $i++) {
@@ -37,10 +38,6 @@ class ColorsSeeder extends Seeder
                 'name' => $faker->domainWord,
                 'number' => $faker->randomNumber($nbDigits = NULL),
             ]);
-            $resource = new Resource();
-            $black->resources()->save($resource);
-            $groupId = (1 === $i % 2) ? 3 : 4;
-            $resource->groups()->save(Group::find($groupId));
         }
 
         for ($i = 0; $i < $hasMany; $i++) {

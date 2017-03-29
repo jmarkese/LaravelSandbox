@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
+    protected $fillable = [
+        'parent_id', 'numer_l', 'denom_l', 'numer_r', 'denom_r', 'interval', 'groupables_id', 'groupables_type',
+    ];
+
     /**
      * One sub Group, belongs to a Main Group ( Or Parent Group ).
      *
@@ -16,6 +20,10 @@ class Group extends Model
         return $this->belongsTo('App\GroupResources\Group', 'parent_id');
     }
 
+    public function ancestors()
+    {
+        return $this->parent()->with('ancestors');
+    }
 
     /**
      * A Parent Group has many sub Groups
@@ -27,36 +35,50 @@ class Group extends Model
         return $this->hasMany('App\GroupResources\Group', 'parent_id');
     }
 
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
+
+    public function tree()
+    {
+        return $this->parent()->children()->where();
+    }
+
+
+
+
+    public function insertNode()
+    {
+        return (Group::where()) ? : $this->nextChild();
+
+    }
+
+    private function nextChild()
+    {
+
+    }
+
+
 
     /**
      * A Group can have many Users, and Users can have many Groups.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->morphedByMany('App\User', 'groupable');
     }
 
     /**
-     * A Group can have many Resources, and Resources can have many Groups.
+     * A Group
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function resources()
+    public function whites()
     {
-        return $this->belongsToMany('App\GroupResources\Resource');
-    }
-
-    /**
-     * A Group might have a polymorphic relationship to another model
-     * that contains more attributes pertaining to that group.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
-     */
-    public function groupable()
-    {
-        return $this->morphTo();
+        return $this->morphedByMany('App\White', 'groupable');
     }
 
 }

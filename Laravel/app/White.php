@@ -43,4 +43,11 @@ class White extends Model
         return $this->belongsTo('App\Grey');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function groups()
+    {
+        return $this->morphToMany('App\GroupResources\Group', 'groupable');
+    }
 }

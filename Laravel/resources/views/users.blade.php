@@ -17,7 +17,7 @@
                 { "data": "id", "title": "Id", "name": "id" },
                 { "data": "name", "title": "Name", "name": "name" },
                 { "data": "email", "title": "Email"},
-                { "data": "groups[].resources[].resourceable.name", "title": "Blacks", "name": "groups.*.resources.*.resourceable.*.name"}
+                { "data": "groups[].descendants[].whites[].name", "title": "Whites", "name": "groups.*.descendants.*.whites.*.name"}
             ]
         } );
     } );
