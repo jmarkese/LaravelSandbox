@@ -16,7 +16,7 @@ class GroupResourcesSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $users = 10;
         $groups = [
-            ['id'=>1, 'name'=>'root', 'parent_id'=>null],
+            ['id'=>1, 'name'=>'root', 'parent_id'=>null, 'numer_l'=>0, 'denom_l'=>1,'numer_r'=>0, 'denom_r'=>1, 'interval'=>0],
             ['id'=>2, 'name'=>'group0', 'parent_id'=>1],
             ['id'=>3, 'name'=>'group0_0', 'parent_id'=>2],
             ['id'=>4, 'name'=>'group0_1', 'parent_id'=>2],

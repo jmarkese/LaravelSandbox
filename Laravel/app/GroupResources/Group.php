@@ -51,7 +51,6 @@ class Group extends Model
     public function insertNode()
     {
         return (Group::where()) ? : $this->nextChild();
-
     }
 
     private function nextChild()
