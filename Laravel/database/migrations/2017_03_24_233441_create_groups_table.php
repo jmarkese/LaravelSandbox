@@ -40,7 +40,7 @@ class CreateGroupsTable extends Migration
                 ->nullable()
                 ->unsigned();
 
-            $table->integer('interval')
+            $table->bigInteger('interval')
                 ->nullable()
                 ->unsigned()
                 ->index();

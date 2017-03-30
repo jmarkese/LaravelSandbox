@@ -46,11 +46,71 @@ class Group extends Model
     }
 
 
-
-
-    public function insertNode()
+    public function nextSibling() // Dyadic
     {
-        return (Group::where()) ? : $this->nextChild();
+        $next['numer_l'] = 2 * $this->numer_l + 1;
+        $next['denom_l'] = 2 * $this->denom_l;
+        $next['numer_r'] = 2 * $this->numer_r + 1;
+        $next['denom_r'] = 2 * $this->denom_r;
+        return $next;
+    }
+
+    public function prevSibling() // Dyadic
+    {
+        if($this->firstChild()) {
+            $prev['numer_l'] = $this->numer_l;
+            $prev['denom_l'] = $this->denom_l;
+            $prev['numer_r'] = $this->numer_r + 1;
+            $prev['denom_r'] = $this->denom_r;
+        } else {
+            $prev['numer_l'] = $this->numer_l - 1;
+            $prev['denom_l'] = $this->denom_l;
+            $prev['numer_r'] = $this->numer_r - 1;
+            $prev['denom_r'] = $this->denom_r;
+        }
+        return $prev;
+    }
+
+    public function firstChild() // Dyadic
+    {
+
+    }
+
+
+    private function mediant()
+    {
+        $numer_m = $numer_l + $numer_r;
+        $denom_m = $denom_l + $denom_r;
+        return ['numer'=>$numer_m,'denom'=>$denom_m];
+    }
+
+
+    /**
+     * Greatest Common Denominator
+     * @param int $a
+     * @param int $b
+     * @return int
+     */
+    private function gcd(int $a, int $b): int
+    {
+        if ($a === 0) {
+            return $b;
+        } else if ($b === 0) {
+            return $a;
+        } else if ($a > $b) {
+            return $this->gcd(($a % $b), $b);
+        } else {
+            return $this->gcd($a, ($b % $a));
+        }
+    }
+
+
+
+
+    public function insert(Group $child)
+    {
+        while(false) // check to see if next child id open
+            $child->interval = $this->interval; //multipied by the next child rational number
     }
 
     private function nextChild()
