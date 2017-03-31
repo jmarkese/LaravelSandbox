@@ -51,4 +51,35 @@ class Node extends Model
         return $this->parent()->children()->where();
     }
 
+
+
+
+
+    public function xRational($numerIn, $denomIn)
+    {
+        $numer = $numerIn + 1;
+        $denom = $denomIn * 2;
+
+        while(floor($numer/2) == $numer/2){
+            $numer /= 2;
+            $denom /= 2;
+        }
+
+        return ['numer'=>$numer, 'denom'=>$denom];
+    }
+
+    public function yRational($numerIn, $denomIn)
+    {
+        $xRational = xRational($numerIn, $denomIn);
+        $numer = $xRational['numer'];
+        $denom = $xRational['denom'];
+
+        while($denom < $denomIn){
+            $numer *= 2;
+            $denom *= 2;
+        }
+
+        return ['numer'=>($numerIn - $numer), 'denom'=>$denom];
+    }
+
 }

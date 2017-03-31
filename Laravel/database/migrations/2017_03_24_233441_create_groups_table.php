@@ -24,11 +24,11 @@ class CreateGroupsTable extends Migration
             $table->string('name')
                 ->nullable();
 
-            $table->integer('numer_l')
+            $table->integer('numer')
                 ->nullable()
                 ->unsigned();
 
-            $table->integer('denom_l')
+            $table->integer('denom')
                 ->nullable()
                 ->unsigned();
 

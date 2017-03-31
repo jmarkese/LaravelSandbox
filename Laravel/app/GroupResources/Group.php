@@ -77,7 +77,7 @@ class Group extends Model
     }
 
 
-    private function mediant()
+    private function mediant($numer_l, $denom_l, $numer_r, $denom_r)
     {
         $numer_m = $numer_l + $numer_r;
         $denom_m = $denom_l + $denom_r;
