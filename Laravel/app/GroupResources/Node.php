@@ -13,73 +13,92 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'parent_id', 'numer', 'denom',
+        'name', 'numer', 'denom',
     ];
 
-    /**
-     * One sub Node, belongs to a Main Node ( Or Parent Node ).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
+    public function left()
+    {
+        return new Rational($this->numer, $this->denom);
+    }
+
+    public function right()
+    {
+        $left = $this->left();
+        for($i = 1; $i <= $left->den; $i++){
+            if(($left->num * $i + 1) % $left->den === 0) {
+                return new Rational(($left->num * $i + 1) / $left->den, $i);
+            }
+        }
+    }
+
     public function parent()
     {
-        return $this->belongsTo('App\GroupResources\Node', 'parent_id');
+        $l = $this->left();
+        $r = $this->right();
+        $parent = new Rational($l->num - $r->num, $l->den - $r->den);
+        return  Node::where('numer', $parent->num)->where('denom', $parent->den)->first();
     }
 
-    public function ancestors()
+    public function insert(string $name)
     {
-        return $this->parent()->with('ancestors');
+        $right = $this->right();
+        $left = $this->left();
+
+        do {
+            $insert = $this->mediant($left, $right);
+            $right = $insert;
+            $node = Node::where('numer', $insert->num)->where('denom', $insert->den)->first();
+        } while ($node);
+
+        return (new Node(['name' => $name, 'numer' => $insert->num, 'denom' => $insert->den]))->save();
     }
 
-    /**
-     * A Parent Node has many sub Nodes
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
+    private function mediant(Rational $l, Rational $r)
     {
-        return $this->hasMany('App\GroupResources\Node', 'parent_id');
+        return new Rational($l->num + $r->num, $l->den + $r->den);
     }
 
-    public function descendants()
+}
+
+class Rational
+{
+    public $num;
+    public $den;
+
+    public function __construct($num, $den)
     {
-        return $this->children()->with('descendants');
+        $this->num = $num / $this->gcd($num, $den);
+        $this->den = $den / $this->gcd($num, $den);
     }
 
-    public function tree()
+    public function __toString()
     {
-        return $this->parent()->children()->where();
+        return $this->num . '/' . $this->den;
     }
 
-
-
-
-
-    public function xRational($numerIn, $denomIn)
+    private function gcd($a, $b)
     {
-        $numer = $numerIn + 1;
-        $denom = $denomIn * 2;
-
-        while(floor($numer/2) == $numer/2){
-            $numer /= 2;
-            $denom /= 2;
+        if ($a === 0) {
+            return $b;
+        } else if ($b === 0) {
+            return $a;
+        } else if ($a > $b) {
+            return $this->gcd(($a % $b), $b);
+        } else {
+            return $this->gcd($a, ($b % $a));
         }
-
-        return ['numer'=>$numer, 'denom'=>$denom];
     }
 
-    public function yRational($numerIn, $denomIn)
+    public function compare(Rational $that)
     {
-        $xRational = xRational($numerIn, $denomIn);
-        $numer = $xRational['numer'];
-        $denom = $xRational['denom'];
+        $cmp = ($this->num * $that->den) - ($this->den * $that->num);
 
-        while($denom < $denomIn){
-            $numer *= 2;
-            $denom *= 2;
+        if ($cmp > 0){
+            return 1;
+        } else if ($cmp < 0){
+            return -1;
+        } else {
+            return 0;
         }
-
-        return ['numer'=>($numerIn - $numer), 'denom'=>$denom];
     }
-
 }

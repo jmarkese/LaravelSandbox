@@ -1,51 +1,45 @@
 <?php
 class Node
 {
-    public function nextSibling() // Dyadic
+
+
+    private $left;
+
+    public function __construct($num, $den)
     {
-        $next['numer_l'] = 2 * $this->numer_l + 1;
-        $next['denom_l'] = 2 * $this->denom_l;
-        $next['numer_r'] = 2 * $this->numer_r + 1;
-        $next['denom_r'] = 2 * $this->denom_r;
-        return $next;
+        $this->left = new Rational($num, $den);
     }
 
-    public function prevSibling() // Dyadic
+    public function right(Rational $left=null)
     {
-        if($this->firstChild()) {
-            $prev['numer_l'] = $this->numer_l;
-            $prev['denom_l'] = $this->denom_l;
-            $prev['numer_r'] = $this->numer_r + 1;
-            $prev['denom_r'] = $this->denom_r;
-        } else {
-            $prev['numer_l'] = $this->numer_l - 1;
-            $prev['denom_l'] = $this->denom_l;
-            $prev['numer_r'] = $this->numer_r - 1;
-            $prev['denom_r'] = $this->denom_r;
+        $left = $left ?: $this->left;
+        for($i = 1; $i <= $left->den; $i++){
+            if(($left->num * $i + 1) % $left->den === 0) {
+                return new Rational(($left->num * $i + 1) / $left->den, $i);
+            }
         }
-        return $prev;
     }
 
-    public function firstChild() // Dyadic
+    public function insertChild(Rational $l, string $name)
     {
+        $left = $this->mediant($l, $this->right($l));
+
 
     }
 
-
-    private function mediant($numer_l, $denom_l, $numer_r, $denom_r)
+    private function mediant(Rational $l, Rational $r)
     {
-        $numer_m = $numer_l + $numer_r;
-        $denom_m = $denom_l + $denom_r;
-        return ['numer'=>$numer_m,'denom'=>$denom_m];
+        return new Rational($l->num + $r->num, $l->den + $r->den);
     }
+
 }
 
 class Rational
 {
-    private $num;
-    private $den;
+    public $num;
+    public $den;
 
-    public function __construct(int $num, int $den)
+    public function __construct($num, $den)
     {
         $this->num = $num / $this->gcd($num, $den);
         $this->den = $den / $this->gcd($num, $den);
@@ -56,7 +50,7 @@ class Rational
         return $this->num . '/' . $this->den;
     }
 
-    private function gcd(int $a, int $b): int
+    private function gcd($a, $b)
     {
         if ($a === 0) {
             return $b;
@@ -69,7 +63,49 @@ class Rational
         }
     }
 
-    public
+    public function compare(Rational $that)
+    {
+        $cmp = ($this->num * $that->den) - ($this->den * $that->num);
 
+        if ($cmp > 0){
+            return 1;
+        } else if ($cmp < 0){
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
 }
+
+
+function mediant(Rational $l, Rational $r)
+{
+    return new Rational($l->num + $r->num, $l->den + $r->den);
+}
+
+function compareRationals(Rational $a, Rational $b)
+{
+    return $a->compare($b);
+}
+
+function right(Rational $left)
+{
+    for($i = 1; $i <= $left->den; $i++){
+        if(($left->num * $i + 1) % $left->den === 0) {
+            return new Rational(($left->num * $i + 1) / $left->den, $i);
+        }
+    }
+}
+
+
+$r1 = new Rational(1,2);
+$r2 = new Rational(3,4);
+$r3 = mediant($r1, $r2);
+$r4 = new Rational(5,7);
+$r5 = right($r4);
+
+echo $r1. PHP_EOL .$r2. PHP_EOL .$r3. PHP_EOL .$r4. PHP_EOL .$r5. PHP_EOL;
+
+
+
