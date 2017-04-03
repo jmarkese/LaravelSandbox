@@ -12,6 +12,7 @@ echo siblingNumber(27,32).PHP_EOL;
 echo 'sib: ';
 echo siblingNumber(3,4).PHP_EOL;
 echo getPath(15,16).PHP_EOL;
+//echo getPath(1,2).PHP_EOL;
 echo distance(27,32,3,4).PHP_EOL;
 echo distance(7,8,3,4).PHP_EOL;
 print_r (child(3,2,3)).PHP_EOL;
@@ -25,7 +26,7 @@ function xRational($numerIn, $denomIn)
     $numer = $numerIn + 1;
     $denom = $denomIn * 2;
 
-    while(floor($numer/2) == (int) $numer/2){
+    while(floor($numer/2) == $numer/2){
         $numer = (int) $numer / 2;
         $denom = (int) $denom / 2;
     }
@@ -42,6 +43,13 @@ function yRational($numerIn, $denomIn)
     while($denom < $denomIn){
         $numer *= 2;
         $denom *= 2;
+    }
+
+    $numer = $numerIn - $numer;
+
+    while(floor($numer/2) == $numer/2){
+        $numer = (int) $numer / 2;
+        $denom = (int) $denom / 2;
     }
 
     return ['numer'=>($numerIn - $numer), 'denom'=>$denom];
