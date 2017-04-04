@@ -13,7 +13,7 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'numer', 'denom',
+        'name', 'numer', 'denom', 'interval_l', 'interval_r'
     ];
 
     public function left()
@@ -21,9 +21,9 @@ class Node extends Model
         return new Rational($this->numer, $this->denom);
     }
 
-    public function right()
+    public function right(Rational $left=null)
     {
-        $left = $this->left();
+        $left = $left ?: $this->left();
         for($i = 1; $i <= $left->den; $i++){
             if(($left->num * $i + 1) % $left->den === 0) {
                 return new Rational(($left->num * $i + 1) / $left->den, $i);
@@ -31,31 +31,56 @@ class Node extends Model
         }
     }
 
+    public function children()
+    {
+        return Node::query()
+            ->where('interval_l', '>=', $this->interval_l)
+            ->where('interval_r', '<=', $this->interval_r)
+            ->get();
+    }
+
     public function parent()
     {
         $l = $this->left();
         $r = $this->right();
         $parent = new Rational($l->num - $r->num, $l->den - $r->den);
-        return  Node::where('numer', $parent->num)->where('denom', $parent->den)->first();
+        return Node::where('numer', $parent->num)->where('denom', $parent->den)->first();
     }
 
-    public function insert(string $name)
+    public function insertNode(string $name)
     {
         $right = $this->right();
         $left = $this->left();
 
         do {
-            $insert = $this->mediant($left, $right);
+            $insert = $left->mediant($right);
             $right = $insert;
             $node = Node::where('numer', $insert->num)->where('denom', $insert->den)->first();
         } while ($node);
 
-        return (new Node(['name' => $name, 'numer' => $insert->num, 'denom' => $insert->den]))->save();
+        $right = $this->right($insert);
+
+        $node = new Node([
+            'name' => $name,
+            'numer' => $insert->num,
+            'denom' => $insert->den,
+            'numer_r' => $right->num,
+            'denom_r' => $right->den,
+            'interval_l' => (int) (PHP_INT_MAX / $insert->den) * $insert->num,
+            'interval_r' => (int) (PHP_INT_MAX / $right->den) * $right->num
+        ]);
+
+        $node->save();
+        return $node;
     }
 
-    private function mediant(Rational $l, Rational $r)
+    public function depth()
     {
-        return new Rational($l->num + $r->num, $l->den + $r->den);
+        if($this->numer = 0 && $this->numer = 1){
+            return 0;
+        } else {
+            return $this->parent()->depth() + 1;
+        }
     }
 
 }
@@ -76,17 +101,9 @@ class Rational
         return $this->num . '/' . $this->den;
     }
 
-    private function gcd($a, $b)
+    public function mediant(Rational $that)
     {
-        if ($a === 0) {
-            return $b;
-        } else if ($b === 0) {
-            return $a;
-        } else if ($a > $b) {
-            return $this->gcd(($a % $b), $b);
-        } else {
-            return $this->gcd($a, ($b % $a));
-        }
+        return new Rational($this->num + $that->num, $this->den + $that->den);
     }
 
     public function compare(Rational $that)
@@ -99,6 +116,19 @@ class Rational
             return -1;
         } else {
             return 0;
+        }
+    }
+
+    private function gcd($a, $b)
+    {
+        if ($a === 0) {
+            return $b;
+        } else if ($b === 0) {
+            return $a;
+        } else if ($a > $b) {
+            return $this->gcd(($a % $b), $b);
+        } else {
+            return $this->gcd($a, ($b % $a));
         }
     }
 }

@@ -13,18 +13,32 @@ class CreateNodeTreeTable extends Migration
      */
     public function up()
     {
-        Schema::table('nodes', function (Blueprint $table) {
-            $table->string('name')
-                ->nullable();
+        Schema::create('nodes', function (Blueprint $table) {
+            $table->string('name');
 
             $table->integer('numer')
-                ->nullable()
                 ->unsigned();
 
             $table->integer('denom')
-                ->nullable()
                 ->unsigned();
 
+            $table->integer('numer_r')
+                ->unsigned();
+
+            $table->integer('denom_r')
+                ->unsigned();
+
+            $table->bigInteger('interval_l')
+                ->unsigned();
+
+            $table->bigInteger('interval_r')
+                ->unsigned();
+
+            $table->timestamps();
+
+            $table->primary(['numer', 'denom']);
+
+            $table->unique(['interval_l', 'interval_r']);
         });
     }
 
@@ -35,9 +49,6 @@ class CreateNodeTreeTable extends Migration
      */
     public function down()
     {
-        Schema::table('nodes', function (Blueprint $table) {
-            //
-        });
         Schema::dropIfExists('nodes');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use App\GroupResources\Group;
+use App\GroupResources\Node;
 use App\User;
 use Illuminate\Database\Seeder;
 
@@ -15,23 +15,34 @@ class GroupResourcesSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
         $users = 10;
-        $groups = [
-            ['id'=>1, 'name'=>'root', 'parent_id'=>null, 'numer'=>0, 'denom'=>1,'numer_r'=>0, 'denom_r'=>1, 'interval'=>PHP_INT_MAX],
-            ['id'=>2, 'name'=>'group0', 'parent_id'=>1],
-            ['id'=>3, 'name'=>'group0_0', 'parent_id'=>2],
-            ['id'=>4, 'name'=>'group0_1', 'parent_id'=>2],
-            ['id'=>5, 'name'=>'group1', 'parent_id'=>1],
+        $nodes = [
+            ['name'=>'root', 'numer'=>0, 'denom'=>1, 'numer_r'=>1, 'denom_r'=>1, 'interval_l'=>0, 'interval_r'=>PHP_INT_MAX],
         ];
 
-        foreach ($groups as $group)
+        foreach ($nodes as $node)
         {
-            $group = new Group($group);
-            $group->save();
-            if('root' !== $group->name) {
-                $parent = Group::find($group->parent_id);
-                $parent->insert($group);
+            if('root' == $node['name']) {
+                $node = new Node($node);
+                $node->save();
+            } else {
+                $parent = Node::where('name', $node['parent'])->firstOrFail();
+                $parent->insertNode($node['name']);
             }
         }
+
+        $root = Node::where('name', 'root')->firstOrFail();
+
+        for($i = 0; $i < 1000; $i++) {
+            $node = $root->insertNode('group' . $i);
+            for ($j = 0; $j < 2; $j++) {
+                $node2 = $node->insertNode('group' . $i . '_' . $j);
+                //for ($k = 0; $k < 10; $k++) {
+                //    $node3 = $node->insertNode('group' . $i . '_' . $j . '_' . $k);
+                //}
+            }
+            echo $i . PHP_EOL;
+        }
+
 
         for ($i = 0; $i < $users; $i++)
         {
