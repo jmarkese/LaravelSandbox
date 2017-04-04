@@ -13,38 +13,42 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'numer', 'denom', 'interval_l', 'interval_r'
+        'parent_id', 'name', 'numer', 'denom', 'interval_l', 'interval_r'
     ];
 
-    public function left()
-    {
-        return new Rational($this->numer, $this->denom);
-    }
-
-    public function right(Rational $left=null)
-    {
-        $left = $left ?: $this->left();
-        for($i = 1; $i <= $left->den; $i++){
-            if(($left->num * $i + 1) % $left->den === 0) {
-                return new Rational(($left->num * $i + 1) / $left->den, $i);
-            }
-        }
-    }
-
-    public function children()
-    {
-        return Node::query()
-            ->where('interval_l', '>=', $this->interval_l)
-            ->where('interval_r', '<=', $this->interval_r)
-            ->get();
-    }
-
     public function parent()
+    {
+        return $this->belongsTo('App\GroupResources\Node', 'parent_id');
+    }
+    /*public function parent()
     {
         $l = $this->left();
         $r = $this->right();
         $parent = new Rational($l->num - $r->num, $l->den - $r->den);
         return Node::where('numer', $parent->num)->where('denom', $parent->den)->first();
+    }*/
+
+    public function ancestors()
+    {
+        return $this->parent()->with('ancestors');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\GroupResources\Node', 'parent_id');
+    }
+
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
+
+    public function subSet()
+    {
+        return Node::query()
+            ->where('interval_l', '>=', $this->interval_l)
+            ->where('interval_r', '<=', $this->interval_r)
+            ->get();
     }
 
     public function insertNode(string $name)
@@ -61,11 +65,10 @@ class Node extends Model
         $right = $this->right($insert);
 
         $node = new Node([
+            'parent_id' => $this->id,
             'name' => $name,
             'numer' => $insert->num,
             'denom' => $insert->den,
-            'numer_r' => $right->num,
-            'denom_r' => $right->den,
             'interval_l' => (int) (PHP_INT_MAX / $insert->den) * $insert->num,
             'interval_r' => (int) (PHP_INT_MAX / $right->den) * $right->num
         ]);
@@ -76,13 +79,27 @@ class Node extends Model
 
     public function depth()
     {
-        if($this->numer = 0 && $this->numer = 1){
+        if($this->numer == 0 && $this->denom == 1){
             return 0;
         } else {
-            return $this->parent()->depth() + 1;
+            return $this->parent->depth() + 1;
         }
     }
 
+    private function left()
+    {
+        return new Rational($this->numer, $this->denom);
+    }
+
+    private function right(Rational $left=null)
+    {
+        $left = $left ?: $this->left();
+        for($i = 1; $i <= $left->den; $i++){
+            if(($left->num * $i + 1) % $left->den === 0) {
+                return new Rational(($left->num * $i + 1) / $left->den, $i);
+            }
+        }
+    }
 }
 
 class Rational

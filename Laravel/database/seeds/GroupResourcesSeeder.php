@@ -16,7 +16,7 @@ class GroupResourcesSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $users = 10;
         $nodes = [
-            ['name'=>'root', 'numer'=>0, 'denom'=>1, 'numer_r'=>1, 'denom_r'=>1, 'interval_l'=>0, 'interval_r'=>PHP_INT_MAX],
+            ['name'=>'root', 'numer'=>0, 'denom'=>1, 'interval_l'=>0, 'interval_r'=>PHP_INT_MAX],
         ];
 
         foreach ($nodes as $node)
@@ -32,13 +32,13 @@ class GroupResourcesSeeder extends Seeder
 
         $root = Node::where('name', 'root')->firstOrFail();
 
-        for($i = 0; $i < 1000; $i++) {
+        for($i = 0; $i < 10; $i++) {
             $node = $root->insertNode('group' . $i);
-            for ($j = 0; $j < 2; $j++) {
+            for ($j = 0; $j < 10; $j++) {
                 $node2 = $node->insertNode('group' . $i . '_' . $j);
-                //for ($k = 0; $k < 10; $k++) {
-                //    $node3 = $node->insertNode('group' . $i . '_' . $j . '_' . $k);
-                //}
+                for ($k = 0; $k < 2; $k++) {
+                    $node3 = $node2->insertNode('group' . $i . '_' . $j . '_' . $k);
+                }
             }
             echo $i . PHP_EOL;
         }
