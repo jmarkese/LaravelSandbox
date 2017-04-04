@@ -16,34 +16,24 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('parent_id')
+            $table->integer('group_id')
                 ->unsigned()
                 ->nullable()
                 ->index();
 
-            $table->string('name')
-                ->nullable();
+            $table->string('name');
 
             $table->integer('numer')
-                ->nullable()
                 ->unsigned();
 
             $table->integer('denom')
-                ->nullable()
                 ->unsigned();
 
-            $table->integer('numer_r')
-                ->nullable()
+            $table->bigInteger('interval_l')
                 ->unsigned();
 
-            $table->integer('denom_r')
-                ->nullable()
+            $table->bigInteger('interval_r')
                 ->unsigned();
-
-            $table->bigInteger('interval')
-                ->nullable()
-                ->unsigned()
-                ->index();
 
             $table->integer('groupables_id')
                 ->unsigned()
@@ -55,6 +45,10 @@ class CreateGroupsTable extends Migration
                 ->index();
 
             $table->timestamps();
+
+            $table->unique(['numer', 'denom']);
+
+            $table->unique(['interval_l', 'interval_r']);
         });
     }
 

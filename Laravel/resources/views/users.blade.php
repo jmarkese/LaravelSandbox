@@ -17,7 +17,8 @@
                 { "data": "id", "title": "Id", "name": "id" },
                 { "data": "name", "title": "Name", "name": "name" },
                 { "data": "email", "title": "Email"},
-                { "data": "groups[].descendants[].whites[].name", "title": "Whites", "name": "groups.*.descendants.*.whites.*.name"}
+                { "data": "groups[].whites[].id", "title": "Whites", "name": "groups.*.whites.*.id"},
+                { "data": "groups[].descendants[].name", "title": "sets", "name": "groups.*.descendants.*.name"}
             ]
         } );
     } );

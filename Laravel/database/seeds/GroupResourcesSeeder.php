@@ -1,6 +1,7 @@
 <?php
 
 use App\GroupResources\Node;
+use App\GroupResources\Group;
 use App\User;
 use Illuminate\Database\Seeder;
 
@@ -22,22 +23,22 @@ class GroupResourcesSeeder extends Seeder
         foreach ($nodes as $node)
         {
             if('root' == $node['name']) {
-                $node = new Node($node);
+                $node = new Group($node);
                 $node->save();
             } else {
-                $parent = Node::where('name', $node['parent'])->firstOrFail();
-                $parent->insertNode($node['name']);
+                $parent = Group::where('name', $node['parent'])->firstOrFail();
+                $parent->insertChild($node['name']);
             }
         }
 
-        $root = Node::where('name', 'root')->firstOrFail();
+        $root = Group::where('name', 'root')->firstOrFail();
 
-        for($i = 0; $i < 10; $i++) {
-            $node = $root->insertNode('group' . $i);
-            for ($j = 0; $j < 10; $j++) {
-                $node2 = $node->insertNode('group' . $i . '_' . $j);
+        for($i = 0; $i < 2; $i++) {
+            $node = $root->insertChild('group' . $i);
+            for ($j = 0; $j < 2; $j++) {
+                $node2 = $node->insertChild('group' . $i . '_' . $j);
                 for ($k = 0; $k < 2; $k++) {
-                    $node3 = $node2->insertNode('group' . $i . '_' . $j . '_' . $k);
+                    $node3 = $node2->insertChild('group' . $i . '_' . $j . '_' . $k);
                 }
             }
             echo $i . PHP_EOL;

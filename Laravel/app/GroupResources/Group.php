@@ -1,123 +1,19 @@
 <?php
 
 namespace App\GroupResources;
-
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
-        'parent_id', 'numer_l', 'denom_l', 'numer_r', 'denom_r', 'interval', 'groupables_id', 'groupables_type',
+        'parent_id', 'name', 'numer', 'denom', 'interval_l', 'interval_r'
     ];
-
-    /**
-     * One sub Group, belongs to a Main Group ( Or Parent Group ).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function parent()
-    {
-        return $this->belongsTo('App\GroupResources\Group', 'parent_id');
-    }
-
-    public function ancestors()
-    {
-        return $this->parent()->with('ancestors');
-    }
-
-    /**
-     * A Parent Group has many sub Groups
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
-    {
-        return $this->hasMany('App\GroupResources\Group', 'parent_id');
-    }
-
-    public function descendants()
-    {
-        return $this->children()->with('descendants');
-    }
-
-    public function tree()
-    {
-        return $this->parent()->children()->where();
-    }
-
-
-    public function nextSibling() // Dyadic
-    {
-        $next['numer_l'] = 2 * $this->numer_l + 1;
-        $next['denom_l'] = 2 * $this->denom_l;
-        $next['numer_r'] = 2 * $this->numer_r + 1;
-        $next['denom_r'] = 2 * $this->denom_r;
-        return $next;
-    }
-
-    public function prevSibling() // Dyadic
-    {
-        if($this->firstChild()) {
-            $prev['numer_l'] = $this->numer_l;
-            $prev['denom_l'] = $this->denom_l;
-            $prev['numer_r'] = $this->numer_r + 1;
-            $prev['denom_r'] = $this->denom_r;
-        } else {
-            $prev['numer_l'] = $this->numer_l - 1;
-            $prev['denom_l'] = $this->denom_l;
-            $prev['numer_r'] = $this->numer_r - 1;
-            $prev['denom_r'] = $this->denom_r;
-        }
-        return $prev;
-    }
-
-    public function firstChild() // Dyadic
-    {
-
-    }
-
-
-    private function mediant($numer_l, $denom_l, $numer_r, $denom_r)
-    {
-        $numer_m = $numer_l + $numer_r;
-        $denom_m = $denom_l + $denom_r;
-        return ['numer'=>$numer_m,'denom'=>$denom_m];
-    }
-
-
-    /**
-     * Greatest Common Denominator
-     * @param int $a
-     * @param int $b
-     * @return int
-     */
-    private function gcd(int $a, int $b): int
-    {
-        if ($a === 0) {
-            return $b;
-        } else if ($b === 0) {
-            return $a;
-        } else if ($a > $b) {
-            return $this->gcd(($a % $b), $b);
-        } else {
-            return $this->gcd($a, ($b % $a));
-        }
-    }
-
-
-
-
-    public function insert(Group $child)
-    {
-        while(false) // check to see if next child id open
-            $child->interval = $this->interval; //multipied by the next child rational number
-    }
-
-    private function nextChild()
-    {
-
-    }
-
 
 
     /**
@@ -138,6 +34,86 @@ class Group extends Model
     public function whites()
     {
         return $this->morphedByMany('App\White', 'groupable');
+    }
+
+
+    public function parent()
+    {
+        return $this->belongsTo('App\GroupResources\Group');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\GroupResources\Group');
+    }
+
+    public function ancestors()
+    {
+        return $this->parent()->with('ancestors');
+    }
+
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
+
+    public function subset()
+    {
+        return Group::query()
+        //return $this->hasMany('App\GroupResources\Group')
+            ->where('interval_l', '>=', $this->interval_l)
+            ->where('interval_r', '<=', $this->interval_r)
+            ->get();
+    }
+
+    public function insertChild(string $name)
+    {
+        $right = $this->right();
+        $left = $this->left();
+
+        do {
+            $insert = $left->mediant($right);
+            $right = $insert;
+            $node = Group::where('numer', $insert->num)->where('denom', $insert->den)->first();
+        } while ($node);
+
+        $right = $this->right($insert);
+
+        $node = new Group([
+            'group_id' => $this->id,
+            'name' => $name,
+            'numer' => $insert->num,
+            'denom' => $insert->den,
+            'interval_l' => (int) (PHP_INT_MAX / $insert->den) * $insert->num,
+            'interval_r' => (int) (PHP_INT_MAX / $right->den) * $right->num
+        ]);
+
+        $node->save();
+        return $node;
+    }
+
+    public function depth()
+    {
+        if($this->numer == 0 && $this->denom == 1){
+            return 0;
+        } else {
+            return $this->parent->depth() + 1;
+        }
+    }
+
+    private function left()
+    {
+        return new Rational($this->numer, $this->denom);
+    }
+
+    private function right(Rational $left=null)
+    {
+        $left = $left ?: $this->left();
+        for($i = 1; $i <= $left->den; $i++){
+            if(($left->num * $i + 1) % $left->den === 0) {
+                return new Rational(($left->num * $i + 1) / $left->den, $i);
+            }
+        }
     }
 
 }
