@@ -36,10 +36,9 @@ class Group extends Model
         return $this->morphedByMany('App\White', 'groupable');
     }
 
-
     public function parent()
     {
-        return $this->belongsTo('App\GroupResources\Group');
+        return $this->belongsTo('App\GroupResources\Group', 'group_id');
     }
 
     public function children()
@@ -57,13 +56,16 @@ class Group extends Model
         return $this->children()->with('descendants');
     }
 
+    public function subtree()
+    {
+        return $this->hasOne('App\GroupResources\Group', 'id', 'id')->with('descendants');
+    }
+
     public function subset()
     {
-        return Group::query()
-        //return $this->hasMany('App\GroupResources\Group')
+        return $this->hasMany('App\GroupResources\Group', 'tree_id', 'tree_id')
             ->where('interval_l', '>=', $this->interval_l)
-            ->where('interval_r', '<=', $this->interval_r)
-            ->get();
+            ->where('interval_r', '<=', $this->interval_r);
     }
 
     public function insertChild(string $name)
@@ -81,6 +83,7 @@ class Group extends Model
 
         $node = new Group([
             'group_id' => $this->id,
+            'tree_id' => $this->tree_id,
             'name' => $name,
             'numer' => $insert->num,
             'denom' => $insert->den,

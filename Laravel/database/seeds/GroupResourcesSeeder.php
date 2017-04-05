@@ -17,21 +17,21 @@ class GroupResourcesSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $users = 10;
         $nodes = [
-            ['name'=>'root', 'numer'=>0, 'denom'=>1, 'interval_l'=>0, 'interval_r'=>PHP_INT_MAX],
+            ['tree_id'=>1, 'name'=>'root', 'numer'=>0, 'denom'=>1, 'interval_l'=>0, 'interval_r'=>PHP_INT_MAX],
         ];
 
         foreach ($nodes as $node)
         {
             if('root' == $node['name']) {
-                $node = new Group($node);
+                $node = new Node($node);
                 $node->save();
             } else {
-                $parent = Group::where('name', $node['parent'])->firstOrFail();
+                $parent = Node::where('name', $node['parent'])->firstOrFail();
                 $parent->insertChild($node['name']);
             }
         }
 
-        $root = Group::where('name', 'root')->firstOrFail();
+        $root = Node::where('name', 'root')->firstOrFail();
 
         for($i = 0; $i < 2; $i++) {
             $node = $root->insertChild('group' . $i);
@@ -52,7 +52,7 @@ class GroupResourcesSeeder extends Seeder
                 'email' => $faker->email,
                 'password' => $faker->word
             ]);
-            $groupId = (1 === $i % 2) ? 3 : 4;
+            $groupId = (0 === $i % 5) ? 2 : ((1 === $i % 2) ? 3 : 4);
             $user->groups()->attach($groupId);
         }
 

@@ -28,4 +28,5 @@ Route::get('/datatablestest', 'Controller@datatables');
 
 Route::get('/usergroups', 'Controller@usergroups');
 
+Route::get('/usergroups2', 'Controller@usergroups2');
 

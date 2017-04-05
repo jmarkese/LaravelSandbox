@@ -12,13 +12,14 @@
         $('#example').DataTable( {
             "serverSide": true,
             "processing": true,
-            "ajax": "usergroups",
+            "ajax": "usergroups2",
             columns : [
                 { "data": "id", "title": "Id", "name": "id" },
-                { "data": "name", "title": "Name", "name": "name" },
-                { "data": "email", "title": "Email"},
-                { "data": "groups[].whites[].id", "title": "Whites", "name": "groups.*.whites.*.id"},
-                { "data": "groups[].descendants[].name", "title": "sets", "name": "groups.*.descendants.*.name"}
+                //{ "data": "name", "title": "Name", "name": "name" },
+                //{ "data": "groups[].name", "title": "group", "name": "groups.*.name"},
+                //{ "data": "groups[].whites[].id", "title": "whites", "name": "groups.*.whites.*.id"},
+                //{ "data": "groups[].parent", "title": "sub", "name": "groups.*.parent.*"},
+                //{ "data": "groups[].subtree[]", "title": "whites", "name": "groups.*.subtree.*"},
             ]
         } );
     } );

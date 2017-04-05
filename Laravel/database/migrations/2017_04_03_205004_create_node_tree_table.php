@@ -21,6 +21,10 @@ class CreateNodeTreeTable extends Migration
                 ->nullable()
                 ->index();
 
+            $table->integer('tree_id')
+                ->unsigned()
+                ->index();
+
             $table->string('name');
 
             $table->integer('numer')

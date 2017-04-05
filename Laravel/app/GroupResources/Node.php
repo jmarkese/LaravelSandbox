@@ -13,7 +13,7 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'parent_id', 'name', 'numer', 'denom', 'interval_l', 'interval_r'
+        'tree_id', 'parent_id', 'name', 'numer', 'denom', 'interval_l', 'interval_r'
     ];
 
     public function parent()
@@ -36,12 +36,16 @@ class Node extends Model
         return $this->children()->with('descendants');
     }
 
-    public function subSet()
+    public function subtree()
     {
-        return Node::query()
+        return $this->hasOne('App\GroupResources\Node', 'id', 'id')->with('descendants');
+    }
+
+    public function subset()
+    {
+        return $this->hasMany('App\GroupResources\Node', 'tree_id', 'tree_id')
             ->where('interval_l', '>=', $this->interval_l)
-            ->where('interval_r', '<=', $this->interval_r)
-            ->get();
+            ->where('interval_r', '<=', $this->interval_r);
     }
 
     public function insertChild(string $name)
@@ -59,6 +63,7 @@ class Node extends Model
 
         $node = new Node([
             'parent_id' => $this->id,
+            'tree_id' => $this->tree_id,
             'name' => $name,
             'numer' => $insert->num,
             'denom' => $insert->den,
