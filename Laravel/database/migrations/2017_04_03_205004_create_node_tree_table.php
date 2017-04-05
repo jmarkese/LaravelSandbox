@@ -16,34 +16,35 @@ class CreateNodeTreeTable extends Migration
         Schema::create('nodes', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('parent_id')
-                ->unsigned()
-                ->nullable()
-                ->index();
+            $table->string('name');
 
             $table->integer('tree_id')
                 ->unsigned()
                 ->index();
 
-            $table->string('name');
+            $table->integer('parent_id')
+                ->unsigned()
+                ->nullable()
+                ->index();
 
             $table->integer('numer')
-                ->unsigned();
+                ->unsigned()
+                ->index();
 
             $table->integer('denom')
-                ->unsigned();
+                ->unsigned()
+                ->index();
 
             $table->bigInteger('interval_l')
-                ->unsigned();
+                ->unsigned()
+                ->index();
 
             $table->bigInteger('interval_r')
-                ->unsigned();
+                ->unsigned()
+                ->index();
 
             $table->timestamps();
 
-            $table->unique(['numer', 'denom']);
-
-            $table->unique(['interval_l', 'interval_r']);
         });
     }
 

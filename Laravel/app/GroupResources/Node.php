@@ -4,7 +4,8 @@ namespace App\GroupResources;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Node extends Model
+abstract class Node extends Model implements TreeNode
+//trait Node
 {
 
     /**
@@ -13,22 +14,17 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'tree_id', 'parent_id', 'name', 'numer', 'denom', 'interval_l', 'interval_r'
+        'name', 'tree_id', 'parent_id', 'numer', 'denom', 'interval_l', 'interval_r'
     ];
-
-    public function parent()
-    {
-        return $this->belongsTo('App\GroupResources\Node', 'parent_id');
-    }
 
     public function children()
     {
         return $this->hasMany('App\GroupResources\Node', 'parent_id');
     }
 
-    public function ancestors()
+    public function parent()
     {
-        return $this->parent()->with('ancestors');
+        return $this->belongsTo('App\GroupResources\Node', 'parent_id');
     }
 
     public function descendants()
@@ -36,16 +32,28 @@ class Node extends Model
         return $this->children()->with('descendants');
     }
 
-    public function subtree()
+    public function ancestors()
     {
-        return $this->hasOne('App\GroupResources\Node', 'id', 'id')->with('descendants');
+        return $this->parent()->with('ancestors');
     }
 
-    public function subset()
+    public function subsets()
     {
         return $this->hasMany('App\GroupResources\Node', 'tree_id', 'tree_id')
             ->where('interval_l', '>=', $this->interval_l)
             ->where('interval_r', '<=', $this->interval_r);
+    }
+
+    public function supersets()
+    {
+        return $this->hasMany('App\GroupResources\Node', 'tree_id', 'tree_id')
+            ->where('interval_l', '<=', $this->interval_l)
+            ->where('interval_r', '>=', $this->interval_r);
+    }
+
+    public function subtree()
+    {
+        return $this->hasOne('App\GroupResources\Node', 'id', 'id')->with('descendants');
     }
 
     public function insertChild(string $name)
@@ -61,15 +69,15 @@ class Node extends Model
 
         $right = $this->right($insert);
 
-        $node = new Node([
-            'parent_id' => $this->id,
-            'tree_id' => $this->tree_id,
-            'name' => $name,
-            'numer' => $insert->num,
-            'denom' => $insert->den,
-            'interval_l' => (int) (PHP_INT_MAX / $insert->den) * $insert->num,
-            'interval_r' => (int) (PHP_INT_MAX / $right->den) * $right->num
-        ]);
+        $node = NodeFactory::make(
+            $name,
+            $this->tree_id,
+            $this->id,
+            $insert->num,
+            $insert->den,
+            (int) (PHP_INT_MAX / $insert->den) * $insert->num,
+            (int) (PHP_INT_MAX / $right->den) * $right->num
+        );
 
         $node->save();
         return $node;
@@ -99,4 +107,3 @@ class Node extends Model
         }
     }
 }
-

@@ -23,15 +23,15 @@ class GroupResourcesSeeder extends Seeder
         foreach ($nodes as $node)
         {
             if('root' == $node['name']) {
-                $node = new Node($node);
+                $node = new Group($node);
                 $node->save();
             } else {
-                $parent = Node::where('name', $node['parent'])->firstOrFail();
+                $parent = Group::where('name', $node['parent'])->firstOrFail();
                 $parent->insertChild($node['name']);
             }
         }
 
-        $root = Node::where('name', 'root')->firstOrFail();
+        $root = Group::where('name', 'root')->firstOrFail();
 
         for($i = 0; $i < 2; $i++) {
             $node = $root->insertChild('group' . $i);
