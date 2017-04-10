@@ -15,8 +15,9 @@
             "ajax": "usergroups2",
             columns : [
                 { "data": "id", "title": "Id", "name": "id" },
-                //{ "data": "name", "title": "Name", "name": "name" },
-                //{ "data": "groups[].name", "title": "group", "name": "groups.*.name"},
+                { "data": "name", "title": "Name", "name": "name" },
+                { "data": "groups[].id", "title": "group", "name": "groups.*.id"},
+                { "data": "groups[].subsets[].whites[].id", "title": "group", "name": "groups.*.subsets.*.whites.*.id"},
                 //{ "data": "groups[].whites[].id", "title": "whites", "name": "groups.*.whites.*.id"},
                 //{ "data": "groups[].parent", "title": "sub", "name": "groups.*.parent.*"},
                 //{ "data": "groups[].subtree[]", "title": "whites", "name": "groups.*.subtree.*"},

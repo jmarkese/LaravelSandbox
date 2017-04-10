@@ -2,11 +2,14 @@
 
 namespace App\GroupResources;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 
-abstract class Node extends Model implements TreeNode
-//trait Node
+class Node extends Model implements TreeNode
 {
+
+    public static $principal = self::class;
+    protected $table = 'nodes';
 
     /**
      * The attributes that are mass assignable.
@@ -19,12 +22,12 @@ abstract class Node extends Model implements TreeNode
 
     public function children()
     {
-        return $this->hasMany('App\GroupResources\Node', 'parent_id');
+        return $this->hasMany(self::$principal, 'parent_id');
     }
 
     public function parent()
     {
-        return $this->belongsTo('App\GroupResources\Node', 'parent_id');
+        return $this->belongsTo(self::$principal, 'parent_id');
     }
 
     public function descendants()
@@ -37,23 +40,30 @@ abstract class Node extends Model implements TreeNode
         return $this->parent()->with('ancestors');
     }
 
-    public function subsets()
+    public function scopeTestSubset($query, $int_l, $int_r)
     {
-        return $this->hasMany('App\GroupResources\Node', 'tree_id', 'tree_id')
+        return $query
+            ->where('interval_l', '>=', $int_l)
+            ->where('interval_r', '<=', $int_r);
+    }
+
+    public function subsets()
+    {   //return $this->testSubset($this->interval_l, $this->interval_r);
+        return $this->hasMany(self::$principal, 'tree_id', 'tree_id')
             ->where('interval_l', '>=', $this->interval_l)
             ->where('interval_r', '<=', $this->interval_r);
     }
 
     public function supersets()
     {
-        return $this->hasMany('App\GroupResources\Node', 'tree_id', 'tree_id')
+        return $this->belongsToMany(self::$principal, 'tree_id', 'tree_id')
             ->where('interval_l', '<=', $this->interval_l)
             ->where('interval_r', '>=', $this->interval_r);
     }
 
     public function subtree()
     {
-        return $this->hasOne('App\GroupResources\Node', 'id', 'id')->with('descendants');
+        return $this->hasOne(self::$principal, 'id', 'id')->with('descendants');
     }
 
     public function insertChild(string $name)
@@ -64,21 +74,20 @@ abstract class Node extends Model implements TreeNode
         do {
             $insert = $left->mediant($right);
             $right = $insert;
-            $node = Node::where('numer', $insert->num)->where('denom', $insert->den)->first();
+            $node = (self::$principal)::where('numer', $insert->num)->where('denom', $insert->den)->first();
         } while ($node);
 
         $right = $this->right($insert);
 
-        $node = NodeFactory::make(
-            $name,
-            $this->tree_id,
-            $this->id,
-            $insert->num,
-            $insert->den,
-            (int) (PHP_INT_MAX / $insert->den) * $insert->num,
-            (int) (PHP_INT_MAX / $right->den) * $right->num
-        );
-
+        $node = new self::$principal([
+            'name' => $name,
+            'tree_id' => $this->tree_id,
+            'parent_id' => $this->id,
+            'numer' => $insert->num,
+            'denom' => $insert->den,
+            'interval_l' => (int) (PHP_INT_MAX / $insert->den) * $insert->num,
+            'interval_r' => (int) (PHP_INT_MAX / $right->den) * $right->num
+        ]);
         $node->save();
         return $node;
     }

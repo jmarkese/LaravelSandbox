@@ -1,15 +1,10 @@
 <?php
 
 namespace App\GroupResources;
-use Illuminate\Database\Eloquent\Model;
 
 class Group extends Node
 {
-    //use Node;
-
-    protected $table = "nodes";
-
-    //protected $fillable = ['name', 'tree_id', 'parent_id', 'numer', 'denom', 'interval_l', 'interval_r'];
+    use NodeTrait;
 
     /**
      * A Group can have many Users, and Users can have many Groups.
@@ -30,6 +25,5 @@ class Group extends Node
     {
         return $this->morphedByMany('App\White', 'groupable');
     }
-
 
 }
