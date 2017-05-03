@@ -14,7 +14,7 @@ trait NodeTrait
         Node::$principal = self::class;
     }
 
-    public function node()
+    /*public function node()
     {
         return $this->hasOne(Node::class, 'id', 'id');
     }
@@ -68,4 +68,23 @@ trait NodeTrait
     {
         return $this->node->depth();
     }
+
+
+
+
+
+
+
+    public function getLftName(){
+        return $this->node->getLftName();
+    }
+
+    public function getRgtName(){
+        return $this->node->getLftName();
+    }
+
+    public function isDescendantOf(TreeNode $other)
+    {
+        return $this->node->isDescendantOf($other);
+    }*/
 }

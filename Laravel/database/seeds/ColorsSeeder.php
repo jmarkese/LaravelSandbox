@@ -29,7 +29,7 @@ class ColorsSeeder extends Seeder
                 'black_id' => $i+1,
                 'grey_id' => ((int) ($i / $belongs)) + 1,
             ]);
-            $groupId = (1 === $i % 2) ? 3 : 4;
+            $groupId = ($i & 2) ? 4 : 3;
             $white->groups()->attach($groupId);
         }
 
