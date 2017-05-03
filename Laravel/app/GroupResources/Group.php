@@ -1,10 +1,12 @@
 <?php
 
 namespace App\GroupResources;
+use Illuminate\Database\Eloquent\Model;
 
-class Group extends Node
+class Group extends Model
 {
     use NodeTrait;
+    protected $table = 'nodes';
 
     /**
      * A Group can have many Users, and Users can have many Groups.

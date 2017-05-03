@@ -22,6 +22,15 @@ class Node extends Model implements TreeNode
 
     public function children()
     {
+        $relation = $this->belongsToMany('App\OrderLine');
+
+        $relation->getQuery()
+            ->join('orders', 'order_lines.order_id', '=', 'orders.id')
+            ->select('orders.*')
+            ->groupBy('orders.id');
+
+        return $relation;
+
         return $this->hasMany(self::$principal, 'parent_id');
     }
 
@@ -50,8 +59,11 @@ class Node extends Model implements TreeNode
     public function subsets()
     {   //return $this->testSubset($this->interval_l, $this->interval_r);
         return $this->hasMany(self::$principal, 'tree_id', 'tree_id')
-            ->where('interval_l', '>=', $this->interval_l)
-            ->where('interval_r', '<=', $this->interval_r);
+            ->whereHas('nodeself', function($q){
+                $q->where('interval_l', '>=', $this->interval_l)->where('interval_r', '<=', $this->interval_r);
+            });
+            //->where('interval_l', '>=', $this->interval_l)
+            //->where('interval_r', '<=', $this->interval_r);
     }
 
     public function supersets()
@@ -64,6 +76,11 @@ class Node extends Model implements TreeNode
     public function subtree()
     {
         return $this->hasOne(self::$principal, 'id', 'id')->with('descendants');
+    }
+
+    public function nodeself()
+    {
+        return $this->hasOne(self::$principal, 'id', 'id');
     }
 
     public function insertChild(string $name)

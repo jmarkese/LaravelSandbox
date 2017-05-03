@@ -59,6 +59,11 @@ trait NodeTrait
         return $this->node->subtree();
     }
 
+    public function nodeself()
+    {
+        return $this->node->nodeself();
+    }
+
     public function insertChild(string $name)
     {
         return $this->node->insertChild($name);
