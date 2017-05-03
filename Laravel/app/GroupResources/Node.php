@@ -9,6 +9,7 @@ class Node extends Model implements TreeNode
 {
 
     public static $principal = self::class;
+
     protected $table = 'nodes';
 
     /**
@@ -20,17 +21,13 @@ class Node extends Model implements TreeNode
         'name', 'tree_id', 'parent_id', 'numer', 'denom', 'interval_l', 'interval_r'
     ];
 
+    public function self()
+    {
+        return $this->hasOne(self::$principal, 'id', 'id');
+    }
+
     public function children()
     {
-        $relation = $this->belongsToMany('App\OrderLine');
-
-        $relation->getQuery()
-            ->join('orders', 'order_lines.order_id', '=', 'orders.id')
-            ->select('orders.*')
-            ->groupBy('orders.id');
-
-        return $relation;
-
         return $this->hasMany(self::$principal, 'parent_id');
     }
 
@@ -49,38 +46,27 @@ class Node extends Model implements TreeNode
         return $this->parent()->with('ancestors');
     }
 
-    public function scopeTestSubset($query, $int_l, $int_r)
-    {
-        return $query
-            ->where('interval_l', '>=', $int_l)
-            ->where('interval_r', '<=', $int_r);
-    }
-
     public function subsets()
-    {   //return $this->testSubset($this->interval_l, $this->interval_r);
-        return $this->hasMany(self::$principal, 'tree_id', 'tree_id')
-            ->whereHas('nodeself', function($q){
-                $q->where('interval_l', '>=', $this->interval_l)->where('interval_r', '<=', $this->interval_r);
-            });
-            //->where('interval_l', '>=', $this->interval_l)
-            //->where('interval_r', '<=', $this->interval_r);
+    {
+        $relation = [
+            ['foreign_key' => 'interval_l', 'operator' => '>=', 'local_key' => 'interval_l'],
+            ['foreign_key' => 'interval_r', 'operator' => '<=', 'local_key' => 'interval_r'],
+        ];
+        return new CompositeKey($this->newRelatedInstance(self::$principal)->newQuery(), $this, $relation);
     }
 
     public function supersets()
     {
-        return $this->belongsToMany(self::$principal, 'tree_id', 'tree_id')
-            ->where('interval_l', '<=', $this->interval_l)
-            ->where('interval_r', '>=', $this->interval_r);
+        $relation = [
+            ['foreign_key' => 'interval_l', 'operator' => '<=', 'local_key' => 'interval_l'],
+            ['foreign_key' => 'interval_r', 'operator' => '>=', 'local_key' => 'interval_r'],
+        ];
+        return new CompositeKey($this->newRelatedInstance(self::$principal)->newQuery(), $this, $relation);
     }
 
     public function subtree()
     {
         return $this->hasOne(self::$principal, 'id', 'id')->with('descendants');
-    }
-
-    public function nodeself()
-    {
-        return $this->hasOne(self::$principal, 'id', 'id');
     }
 
     public function insertChild(string $name)
@@ -132,4 +118,5 @@ class Node extends Model implements TreeNode
             }
         }
     }
+
 }

@@ -28,16 +28,7 @@ class Controller extends BaseController
 
     public function usergroups2(Request $request)
     {
-        $group = \App\GroupResources\Group::where('name', 'group0_0')->first();
         $users = \App\User::query();
-        //$users = \App\User::find(1);
-
-        //dd($users->get());
-        //dd(data_get($users->get(),'*.groups.*.name'));
-        //dd(data_get($users,"groups.*.subsets.*.whites.*.name"));
-
-
-        //return data_get($users,"user.groups");
         return Datatables::response($users, $request);
     }
 
