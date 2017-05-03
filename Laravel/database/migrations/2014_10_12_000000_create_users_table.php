@@ -18,8 +18,6 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
-            $table->integer('blue_id')->unsigned();
-            $table->integer('red_id')->unsigned();
             $table->rememberToken();
             $table->timestamps();
         });

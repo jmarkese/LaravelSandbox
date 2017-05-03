@@ -10,10 +10,6 @@ class Red extends Model
         return $this->belongsTo('App\White');
     }
 
-    public function users(){
-        return $this->hasMany('App\User');
-    }
-
     public function yellows(){
         return $this->hasMany('App\Yellow');
     }

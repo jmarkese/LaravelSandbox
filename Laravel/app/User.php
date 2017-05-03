@@ -27,12 +27,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function blue(){
-        return $this->belongsTo('Blue');
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function groups()
+    {
+        return $this->morphToMany('App\GroupResources\Group', 'groupable');
     }
-
-    public function red(){
-        return $this->belongsTo('App\Red');
-    }
-
 }

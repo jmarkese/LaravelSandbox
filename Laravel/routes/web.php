@@ -19,7 +19,14 @@ Route::get('/datatables', function () {
     return view('datatables');
 });
 
+Route::get('/users', function () {
+    return view('users');
+});
+
+
 Route::get('/datatablestest', 'Controller@datatables');
 
+Route::get('/usergroups', 'Controller@usergroups');
 
+Route::get('/usergroups2', 'Controller@usergroups2');
 
