@@ -30,3 +30,6 @@ Route::get('/usergroups', 'Controller@usergroups');
 
 Route::get('/usergroups2', 'Controller@usergroups2');
 
+Route::get('/partytone', 'Controller@partyTone');
+
+Route::get('/partytonedata', ['as'=>'partytonedata', 'uses'=>'Controller@partyToneData']);
