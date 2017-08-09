@@ -30,3 +30,4 @@ Route::get('/usergroups', 'Controller@usergroups');
 
 Route::get('/usergroups2', 'Controller@usergroups2');
 
+Route::get('/politicaltone', 'Controller@politicalTone');
