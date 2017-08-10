@@ -16,6 +16,13 @@ function sumFactors ()
     return $sum;
 }
 
+function timeFunction(callable $function){
+    $start = microtime(true);
+    $result = $function();
+    $time = (microtime(true) - $start);
+    echo sprintf("%d (Execution Time: %f)".PHP_EOL, $result, $time);
+}
+
 
 /*
 timeFunction('slow');
@@ -86,11 +93,5 @@ function getSumFactorsOfX($x, $limit)
     }
     return $sum;
 }
-
-function timeFunction(callable $function){
-    $start = microtime(true);
-    $result = $function();
-    $time = (microtime(true) - $start);
-    echo sprintf("%d (Execution Time: %f)".PHP_EOL, $result, $time);
-}
 */
+
