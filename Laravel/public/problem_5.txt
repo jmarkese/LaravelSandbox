@@ -1,0 +1,13 @@
+Problem 5:
+
+Bug 1: PHP Parse error:  syntax error, unexpected 'new' (T_NEW) in /var/www/LaravelSandbox/Laravel/public/excel_reader2.php on line 916
+PHP 7 incompatible http://php.net/manual/en/migration70.incompatible.php See: “New objects cannot be assigned by reference”
+
+Fix: change excel_reader2.php line 916 to:
+$this->_ole = new OLERead();
+
+
+Bug 2: Off by one error
+
+Fix: change line 831 to:
+return substr($data, $start, $len + 1);

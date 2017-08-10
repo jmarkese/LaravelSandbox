@@ -381,7 +381,7 @@ class Spreadsheet_Excel_Reader {
 	}
 	function hyperlink($row,$col,$sheet=0) {
 		$link = $this->sheets[$sheet]['cellsInfo'][$row][$col]['hyperlink'];
-        if ($link) {
+		if ($link) {
 			return $link['link'];
 		}
 		return '';
@@ -828,7 +828,7 @@ class Spreadsheet_Excel_Reader {
 	function read16bitstring($data, $start) {
 		$len = 0;
 		while (ord($data[$start + $len]) + ord($data[$start + $len + 1]) > 0) $len++;
-		return substr($data, $start, $len);
+		return substr($data, $start, $len + 1);
 	}
 
 	// ADDED by Matt Kruse for better formatting
@@ -914,7 +914,7 @@ class Spreadsheet_Excel_Reader {
 	 */
 	function Spreadsheet_Excel_Reader($file='',$store_extended_info=true,$outputEncoding='') {
 		$this->_ole = new OLERead();
-		$this->setUTFEncoder('mb');
+		$this->setUTFEncoder('iconv');
 		if ($outputEncoding != '') {
 			$this->setOutputEncoding($outputEncoding);
 		}

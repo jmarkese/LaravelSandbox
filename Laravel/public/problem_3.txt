@@ -1,0 +1,3 @@
+Problem 3:
+
+This function effectively returns if a number is even (true) or odd (false).
