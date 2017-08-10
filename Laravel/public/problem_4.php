@@ -1,6 +1,6 @@
 <?php
 
-const LIMIT = 9999;
+const LIMIT = 999;
 
 
 timeFunction('sumFactors');
